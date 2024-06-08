@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Spring_boot_2" />
         <module name="Project" />
+        <module name="customerOrders" />
       </profile>
     </annotationProcessing>
   </component>
@@ -16,6 +17,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Project" options="-parameters" />
       <module name="Spring_boot_2" options="-parameters" />
+      <module name="customerOrders" options="-parameters" />
     </option>
   </component>
 </project>
