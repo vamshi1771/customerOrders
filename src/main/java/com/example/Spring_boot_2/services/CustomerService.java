@@ -18,7 +18,7 @@ public interface CustomerService {
 
     public Page<Customers> SearchedCustomer(Integer offset,Integer pagesize,String text) throws NoCustomerExistException;
 
-    void SaveCustomer(Customerdto  customers,Integer num) throws columnAlreadyExistException;
+    void SaveCustomer(Customerdto  customers,String name) throws columnAlreadyExistException;
 
     Optional<Customerdto> getcustomer(Integer id)throws NoCustomerExistException;
 }

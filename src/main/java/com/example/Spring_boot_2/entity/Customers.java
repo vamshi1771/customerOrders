@@ -2,10 +2,7 @@ package com.example.Spring_boot_2.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "customers")
 public class Customers {
     @Id
-
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "customer_id")
     private Integer customerid;
     @Column(name = "customer_name")
@@ -25,6 +22,8 @@ public class Customers {
     private String region;
     @Column(name = "gender")
     private String gender;
-
-
+    @Column (name = "phone_number")
+    private String phoneNumber;
+    @Column (name = "address")
+    private String address;
 }

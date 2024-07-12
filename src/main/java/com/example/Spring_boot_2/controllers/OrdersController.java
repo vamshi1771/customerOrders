@@ -33,10 +33,10 @@ public class OrdersController {
     }
 
 
-    @PutMapping("/UpdateOrder/{order_id}")
-    public void UpdateOrder(@RequestBody Orders order, @PathVariable Integer order_id) {
-        obj1.UpdateOrder(order, order_id);
-    }
+//    @PutMapping("/UpdateOrder/{order_id}")
+//    public void UpdateOrder(@RequestBody Orders order, @PathVariable Integer order_id) {
+//        obj1.UpdateOrder(order, order_id);
+//    }
 
     @GetMapping("/getByRegion/{Name}")
     public List<Orderdto> getByRegion(@PathVariable String Name) {
@@ -54,8 +54,8 @@ public class OrdersController {
         return obj1.OrdersInPages(offset, pageSize);
     }
 
-    @GetMapping("/getSearchOrders/{offset}/{pageSize}/{text}")
-    public Page<Orderdto> SearchedOrders(@PathVariable Integer offset, @PathVariable Integer pageSize, @PathVariable String text) throws NoOrderExistsException {
-        return obj1.SearchedOrders(offset, pageSize, text);
-    }
+//    @GetMapping("/getSearchOrders/{offset}/{pageSize}/{text}")
+//    public Page<Orderdto> SearchedOrders(@PathVariable Integer offset, @PathVariable Integer pageSize, @PathVariable String text) throws NoOrderExistsException {
+//        return obj1.SearchedOrders(offset, pageSize, text);
+//    }
 }

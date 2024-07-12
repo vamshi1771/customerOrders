@@ -2,6 +2,8 @@ package com.example.Spring_boot_2.controllers;
 
 import com.example.Spring_boot_2.dto.Customerdto;
 import com.example.Spring_boot_2.entity.Customers;
+import com.example.Spring_boot_2.services.CustomerService;
+import com.example.Spring_boot_2.services.OrderService;
 import com.example.Spring_boot_2.services.impl.CustomerServiceimpl;
 import com.example.Spring_boot_2.exceptions.NoCustomerExistException;
 import com.example.Spring_boot_2.exceptions.columnAlreadyExistException;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class CustomerController {
     @Autowired
     CustomerServiceimpl obj;
+
 
 
     @GetMapping("/getAllCustomers")
@@ -43,8 +46,8 @@ public class CustomerController {
 
     @PostMapping("/Post")
     public void saveCustomer(@RequestBody Customerdto customer) throws columnAlreadyExistException {
-        Integer num = customer.getCustomerId();
-        obj.SaveCustomer(customer, num);
+        String name = customer.getCustomerName();
+        obj.SaveCustomer(customer, name);
     }
 
 
@@ -53,11 +56,11 @@ public class CustomerController {
         return obj.getcustomer(customerId);
     }
 
-    @PutMapping("/update")
-    public void update(@RequestBody Customerdto customer) throws updateException {
-        Integer num = customer.getCustomerId();
-        obj.updateCustomer(customer, num);
-    }
+//    @PutMapping("/update")
+//    public void update(@RequestBody Customerdto customer) throws updateException {
+//        Integer num = customer.getCustomerId();
+//        obj.updateCustomer(customer, num);
+//    }
 
 }
 

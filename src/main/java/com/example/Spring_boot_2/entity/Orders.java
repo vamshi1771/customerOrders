@@ -3,6 +3,7 @@ package com.example.Spring_boot_2.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Data
 @AllArgsConstructor
@@ -15,14 +16,18 @@ import javax.persistence.*;
 public class Orders {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer orderid;
-    @Column(name = "order_name")
-    private String ordername;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "order_id")
+    private Long orderId;
+    @Column(name = "customer_name")
+    private String customerName;
     @Column(name = "price")
-    private Integer price;
-    @Column(name = "cust_id")
-    private Integer cust_id;
+    private String price;
+    @Column(name = "customer_id")
+    private Integer customerId;
+    @Column(name = "product_id")
+    private Long productId;
+    @Column(name = "no_of_products")
+    private Long noOfProducts;
 
 }

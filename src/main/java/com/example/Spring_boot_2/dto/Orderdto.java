@@ -10,9 +10,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Orderdto {
-    private Integer orderId;
-    private String orderName;
-    private Integer price;
-    private Integer custId;
+    private Long productId;
+    private String customerName;
+    private String price;
+    private Integer customerId;
+    private Long numberOfProducts;
 }
 

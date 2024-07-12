@@ -12,7 +12,9 @@ import com.example.Spring_boot_2.exceptions.updateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,12 +50,14 @@ public class CustomerServiceimpl implements CustomerService {
     }
 
     @Override
-    public void SaveCustomer(Customerdto customers,Integer num) throws columnAlreadyExistException {
-        Customers customers1=new Customers();
+    public void SaveCustomer(Customerdto customers,String name) throws NoCustomerExistException {
+        System.out.println("customer Details" + customers);
+        Customers customers1 = new Customers();
         customers1= convertIntoCusotmerFromCustormerdto(customers);
-        Optional<Customers> cust = CustRepo.findById(num);
-        if(cust.isPresent()){
-            throw new columnAlreadyExistException("Customer Already Exists");
+        List<String> cust = CustRepo.findByCustomerName(name) ;
+        if(cust.size() > 0){
+            throw  new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Same Customer Name Already Exits");
+
         }
         else {
             CustRepo.save(customers1);
@@ -67,6 +71,8 @@ public class CustomerServiceimpl implements CustomerService {
          return   CustRepo.findById(id)
                  .map(customers -> new Customerdto(
                          customers.getCustomerid(),
+                         customers.getPhoneNumber(),
+                         customers.getAddress(),
                          customers.getCustomername(),
                          customers.getRegion(),
                          customers.getGender()));
@@ -108,12 +114,12 @@ public class CustomerServiceimpl implements CustomerService {
 
     private Customers convertIntoCusotmerFromCustormerdto(Customerdto customer){
         Customers customers = new Customers();
-        customers.setCustomerid(customer.getCustomerId());
         customers.setCustomername(customer.getCustomerName());
+        customers.setPhoneNumber(customer.getPhoneNumber());
         customers.setRegion(customer.getRegion());
         customers.setGender(customer.getGender());
-
-
+        customer.setAddress(customer.getAddress());
+        customers.setCustomerid(customers.getCustomerid());
         return customers;
     }
 
@@ -145,10 +151,11 @@ public class CustomerServiceimpl implements CustomerService {
 
     private Customerdto convertintoDto(Customers customer){
         Customerdto customerdto = new Customerdto();
-        customerdto.setCustomerId(customer.getCustomerid());
+        customerdto.setPhoneNumber(customer.getPhoneNumber());
         customerdto.setCustomerName(customer.getCustomername());
         customerdto.setRegion(customer.getRegion());
         customerdto.setGender(customer.getGender());
+        customerdto.setAddress(customer.getAddress());
         return customerdto;
     }
     
