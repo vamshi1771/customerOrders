@@ -1,13 +1,13 @@
 package com.example.Spring_boot_2.controllers;
 
 import com.example.Spring_boot_2.dto.Customerdto;
+import com.example.Spring_boot_2.dto.CustomersList;
+import com.example.Spring_boot_2.dto.customersPageableDto;
+import com.example.Spring_boot_2.dto.regionsDto;
 import com.example.Spring_boot_2.entity.Customers;
-import com.example.Spring_boot_2.services.CustomerService;
-import com.example.Spring_boot_2.services.OrderService;
 import com.example.Spring_boot_2.services.impl.CustomerServiceimpl;
 import com.example.Spring_boot_2.exceptions.NoCustomerExistException;
 import com.example.Spring_boot_2.exceptions.columnAlreadyExistException;
-import com.example.Spring_boot_2.exceptions.updateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +29,13 @@ public class CustomerController {
     }
 
     @GetMapping("/getAllCustomersRegions")
-    public List<String> getAllCustomerRegions() {
+    public regionsDto getAllCustomerRegions() {
         return obj.getAllCusotmersRegions();
     }
 
 
     @GetMapping("/getAllCustomerInPages/{offset}/{pageSize}")
-    public Page<Customers> getAllCustomerInPages(@PathVariable Integer offset, @PathVariable Integer pageSize) {
+    public CustomersList getAllCustomerInPages(@PathVariable Integer offset, @PathVariable Integer pageSize) {
         return obj.CustomerInPages(offset, pageSize);
     }
 
@@ -55,6 +55,9 @@ public class CustomerController {
     public Optional<Customerdto> getcustomer(@PathVariable Integer customerId) throws NoCustomerExistException {
         return obj.getcustomer(customerId);
     }
+
+
+
 
 //    @PutMapping("/update")
 //    public void update(@RequestBody Customerdto customer) throws updateException {

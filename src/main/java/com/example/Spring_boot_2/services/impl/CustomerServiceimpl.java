@@ -1,13 +1,13 @@
 package com.example.Spring_boot_2.services.impl;
 
-import com.example.Spring_boot_2.dto.Customerdto;
-import com.example.Spring_boot_2.dto.Paginationdto;
+import com.example.Spring_boot_2.dto.*;
 import com.example.Spring_boot_2.entity.Customers;
+import com.example.Spring_boot_2.entity.Products;
 import com.example.Spring_boot_2.repository.CustomerRepository;
 import com.example.Spring_boot_2.repository.OrderRepository;
+import com.example.Spring_boot_2.repository.ProductsRepository;
 import com.example.Spring_boot_2.services.CustomerService;
 import com.example.Spring_boot_2.exceptions.NoCustomerExistException;
-import com.example.Spring_boot_2.exceptions.columnAlreadyExistException;
 import com.example.Spring_boot_2.exceptions.updateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,39 +27,65 @@ public class CustomerServiceimpl implements CustomerService {
     private CustomerRepository CustRepo;
     @Autowired
     private OrderRepository orderRepo;
+    @Autowired
+    private ProductsRepository productsRepository;
 
     public CustomerServiceimpl() {
     }
 
     public List<Customerdto> getAllCusotmers(){
        List<Customers> customer= CustRepo.findAll().stream().collect(Collectors.toList());
-       List<Customerdto> CustDto = null;
-        for (Customers convertintoDto:customer) {
-            CustDto.add(convertintoDto(convertintoDto));
-        }
-        return CustDto;
+        System.out.println("customer"+customer);
+        List<Customerdto> customersList = customer.stream()
+                .map(originalObject -> convertintoDto(originalObject)) // Map each object to a new object
+                .collect(Collectors.toList());
+
+        return customersList;
     }
 
-    public List<String> getAllCusotmersRegions(){
-        return CustRepo.getCustomerregions()
+    public regionsDto getAllCusotmersRegions(){
+        regionsDto regionsDto = new regionsDto();
+        List<String> regions = CustRepo.getCustomerregions()
                 .stream()
                 .collect(Collectors.toList());
+        regionsDto.setRegions(regions);
+        Integer customerCount =  CustRepo.findAll().size();
+        regionsDto.setCustomersCount(customerCount);
+        Integer orderCount = orderRepo.findAll().size();
+        regionsDto.setOrdersCount(orderCount);
+        Integer ProductCount = productsRepository.findAll().size();
+        regionsDto.setProductsCount(ProductCount);
+        Integer outOfStock = productsRepository.findOutOfStock();
+        regionsDto.setOutOfStock(outOfStock);
+        return regionsDto;
     }
 
     @Override
-    public Page<Customers> CustomerInPages(int offset, int pagesize) {
-        return CustRepo.findAll(PageRequest.of(offset,pagesize));
+    public  CustomersList CustomerInPages(int offset, int pageSize) {
+        int startIndex = (offset == 0) ? 0 : offset*pageSize;
+       List<Object[]> results =  CustRepo.getAllCustomerInPages(startIndex,pageSize);
+       List<Customers> customers = CustRepo.findAll();
+       int customersCont = customers.size();
+        customersPageableDto customerDto = new customersPageableDto();
+        List<customersPageableDto> customersList = results.stream()
+                .map(originalObject -> convertIntoCustomerPageableDto(originalObject,pageSize))
+                .collect(Collectors.toList());
+        CustomersList customersList1 = new CustomersList();
+        customersList1.setCustomersPageable(customersList);
+        int pageCount = (int) Math.ceil((double) customersCont/pageSize);
+        customersList1.setPageCount((long) pageCount);
+        customersList1.setPageIndex((long) offset+1);
+        return customersList1;
     }
 
     @Override
     public void SaveCustomer(Customerdto customers,String name) throws NoCustomerExistException {
-        System.out.println("customer Details" + customers);
         Customers customers1 = new Customers();
         customers1= convertIntoCusotmerFromCustormerdto(customers);
-        List<String> cust = CustRepo.findByCustomerName(name) ;
+        String customerName = name.trim();
+        List<String> cust = CustRepo.findByCustomerName(customerName) ;
         if(cust.size() > 0){
             throw  new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Same Customer Name Already Exits");
-
         }
         else {
             CustRepo.save(customers1);
@@ -118,7 +146,7 @@ public class CustomerServiceimpl implements CustomerService {
         customers.setPhoneNumber(customer.getPhoneNumber());
         customers.setRegion(customer.getRegion());
         customers.setGender(customer.getGender());
-        customer.setAddress(customer.getAddress());
+        customers.setAddress(customer.getAddress());
         customers.setCustomerid(customers.getCustomerid());
         return customers;
     }
@@ -151,12 +179,24 @@ public class CustomerServiceimpl implements CustomerService {
 
     private Customerdto convertintoDto(Customers customer){
         Customerdto customerdto = new Customerdto();
+        customerdto.setCustomerId(customer.getCustomerid());
         customerdto.setPhoneNumber(customer.getPhoneNumber());
         customerdto.setCustomerName(customer.getCustomername());
         customerdto.setRegion(customer.getRegion());
         customerdto.setGender(customer.getGender());
         customerdto.setAddress(customer.getAddress());
         return customerdto;
+    }
+
+    private customersPageableDto convertIntoCustomerPageableDto(Object[] obj,Integer pagesize ){
+        customersPageableDto customersPageableDto = new customersPageableDto();
+        customersPageableDto.setCustomerName(obj[1].toString());
+        customersPageableDto.setRegion(obj[2].toString());
+        customersPageableDto.setGender(obj[3].toString());
+        BigInteger bigInteger = (BigInteger) obj[4];
+        customersPageableDto.setOrderCount(bigInteger.longValue());
+        customersPageableDto.setCustomerId((Integer) obj[0]);
+        return customersPageableDto;
     }
     
     public Page<Customers> SearchedCustomer(Integer offset,Integer pagesize,String text) throws NoCustomerExistException {
@@ -186,7 +226,22 @@ public class CustomerServiceimpl implements CustomerService {
         });
         return pg;
     }
+
+    public CustomersAndProductsDto getCustomersAndProducts() {
+        List<Customers> customersList  = CustRepo.findAll();
+        Customerdto customerObj = new Customerdto();
+        List<Customerdto> customersLists = customersList.stream()
+                .map(originalObject -> convertintoDto(originalObject))
+                .collect(Collectors.toList());
+        List<Products> productsList = productsRepository.findAll();
+        CustomersAndProductsDto customersAndProductsDto =new CustomersAndProductsDto();
+        customersAndProductsDto.setCustomersList(customersLists);
+        customersAndProductsDto.setProductLists(productsList);
+
+        return  customersAndProductsDto;
+    }
 }
+
 
 
 

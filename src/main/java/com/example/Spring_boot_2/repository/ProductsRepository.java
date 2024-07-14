@@ -19,4 +19,7 @@ public interface ProductsRepository extends JpaRepository<Products, Long> {
     @Query(value = "UPDATE products SET product_name = ?1, price = ?2, quantity = ?3,photo_url = ?4  WHERE product_id = ?5", nativeQuery = true)
     void updateProduct(String productName,Long price,Long quantity,String photoUrl,Long ProductId);
 
+    @Query(value = "select count(product_id) as count from products where quantity ='0'", nativeQuery = true)
+    Integer findOutOfStock();
+
 }

@@ -1,6 +1,10 @@
 package com.example.Spring_boot_2.controllers;
 import com.example.Spring_boot_2.dto.Orderdto;
+import com.example.Spring_boot_2.dto.orderList;
+import com.example.Spring_boot_2.dto.pageableOrders;
+import com.example.Spring_boot_2.dto.regionsDto;
 import com.example.Spring_boot_2.entity.Orders;
+import com.example.Spring_boot_2.repository.OrderRepository;
 import com.example.Spring_boot_2.services.impl.OrderServicesImpl;
 import com.example.Spring_boot_2.exceptions.NoOrderExistsException;
 import com.example.Spring_boot_2.exceptions.NoOrdersForThisCustomer;
@@ -15,6 +19,10 @@ public class OrdersController {
 
     @Autowired
     OrderServicesImpl obj1;
+
+    @Autowired
+    OrderRepository orderRepository;
+
 
     @PostMapping("/saveOrder")
     public void SaveOrder(@RequestBody Orderdto order) {
@@ -48,9 +56,13 @@ public class OrdersController {
         return obj1.getOrdersByCustomer_Id(id);
     }
 
+    @GetMapping("/GetAllOrderedProducts")
+    public regionsDto getAllOrdersProducts(){
+       return  obj1.getAllProducts();
+    }
 
     @GetMapping("/getAllOrdersInPages/{offset}/{pageSize}")
-    public Page<Orders> getAllOrdersInPages(@PathVariable Integer offset, @PathVariable Integer pageSize) {
+    public orderList getAllOrdersInPages(@PathVariable Integer offset, @PathVariable Integer pageSize) {
         return obj1.OrdersInPages(offset, pageSize);
     }
 

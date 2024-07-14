@@ -13,14 +13,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Table(name = "orders")
-public class Orders {
+public class    Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "order_id")
     private Long orderId;
-    @Column(name = "customer_name")
-    private String customerName;
     @Column(name = "price")
     private String price;
     @Column(name = "customer_id")

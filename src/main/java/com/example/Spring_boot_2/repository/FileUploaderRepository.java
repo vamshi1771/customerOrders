@@ -11,8 +11,7 @@ import java.util.Optional;
 public interface FileUploaderRepository extends JpaRepository<FileUploader, Long> {
 
 
-    @Modifying
-    @Transactional
+
     @Query(value = "SELECT * FROM file_uploader WHERE name=:fileName", nativeQuery = true)
     Optional<FileUploader> findByName(String fileName);
 }

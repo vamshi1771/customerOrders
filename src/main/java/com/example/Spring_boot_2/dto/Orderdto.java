@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 public class Orderdto {
     private Long productId;
-    private String customerName;
     private String price;
     private Integer customerId;
     private Long numberOfProducts;

@@ -1,11 +1,14 @@
 package com.example.Spring_boot_2.controllers;
 
+import com.example.Spring_boot_2.dto.CustomersAndProductsDto;
 import com.example.Spring_boot_2.dto.FormWrapper;
 import com.example.Spring_boot_2.dto.productsDto;
 import com.example.Spring_boot_2.entity.Products;
+import com.example.Spring_boot_2.services.impl.CustomerServiceimpl;
 import com.example.Spring_boot_2.services.impl.ProductServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.platform.commons.annotation.Testable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,9 @@ public class ProductsController {
     ProductServiceImpl productService;
 
     @Autowired
+    CustomerServiceimpl customerServiceimpl;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @PostMapping("/saveProduct/{productName}/{price}/{quantity}")
@@ -34,7 +40,7 @@ public class ProductsController {
     }
     @GetMapping("/getAllProducts/{offset}/{pageSize}")
    public Page<Products> getAllProducts(@PathVariable Integer offset, @PathVariable Integer pageSize){
-        if(pageSize == null) pageSize = 20;
+        if(pageSize == null) pageSize = 10;
       return productService.productsInPages(offset,pageSize);
     }
     @PostMapping("/updateProduct/{productName}/{price}/{quantity}/{productId}")
@@ -44,6 +50,9 @@ public class ProductsController {
                       @PathVariable Long quantity,@PathVariable Long productId) throws IOException {
         productService.updateProduct(productName,price,quantity,file,productId);
     }
-
+    @GetMapping("/getCustomersAndProducts")
+    public CustomersAndProductsDto getCustomerProducts() {
+        return customerServiceimpl.getCustomersAndProducts();
+    }
 
 }
