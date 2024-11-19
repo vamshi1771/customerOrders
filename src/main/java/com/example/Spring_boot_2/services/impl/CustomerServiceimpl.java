@@ -73,6 +73,7 @@ public class CustomerServiceimpl implements CustomerService {
         CustomersList customersList1 = new CustomersList();
         customersList1.setCustomersPageable(customersList);
         int pageCount = (int) Math.ceil((double) customersCont/pageSize);
+        System.out.println("pageCount"+pageCount);
         customersList1.setPageCount((long) pageCount);
         customersList1.setPageIndex((long) offset+1);
         return customersList1;
