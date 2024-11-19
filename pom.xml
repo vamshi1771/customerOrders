@@ -9,6 +9,8 @@
 		<version>2.7.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+
 	<!-- This Pom File Inherit spring-boot-starter POM file / all the configurations will be inherited from parent POM-->
 	<!-- if no parent is given, super POM which is parent of all pom files  configurations will be inherited-->
 	<groupId>com.example</groupId>

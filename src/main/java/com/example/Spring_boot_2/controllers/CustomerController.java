@@ -22,7 +22,6 @@ public class CustomerController {
     CustomerServiceimpl obj;
 
 
-
     @GetMapping("/getAllCustomers")
     public List<Customerdto> getAllCustomer() {
         return obj.getAllCusotmers();
@@ -55,44 +54,10 @@ public class CustomerController {
     public Optional<Customerdto> getcustomer(@PathVariable Integer customerId) throws NoCustomerExistException {
         return obj.getcustomer(customerId);
     }
-
-
-
-
-//    @PutMapping("/update")
-//    public void update(@RequestBody Customerdto customer) throws updateException {
-//        Integer num = customer.getCustomerId();
-//        obj.updateCustomer(customer, num);
-//    }
-
 }
 
 
-//    @Autowired
-//    private Empservice empdetail;
-//
-//    @RequestMapping("/")
-//    public List<Empdetails> hello(){
-//        return empdetail.getAllEmp();
-//    }
-//    @RequestMapping("/{name}")
-//    public Optional<Empdetails> getOne(@PathVariable String name){
-//        return empdetail.getEmployee(name);
-//    }
-//    @RequestMapping(method = RequestMethod.POST,value = "/add")
-//    public void add(@RequestBody Empdetails empdetails){
-//        empdetail.addEmp(empdetails);
-//    }
-//
-//    @RequestMapping(method = RequestMethod.PUT,value = "/put/{id}")
-//    public void add(@RequestBody Empdetails empdetails,@PathVariable String name) {
-//        empdetail.updateEmployees(name, empdetails);
-//    }
-//
-//    @RequestMapping(method = RequestMethod.DELETE,value = "/delete/{id}")
-//    public void delete(@RequestBody Empdetails empdetails,@PathVariable String name) {
-//        empdetail.updateEmployees(name, empdetails);
-//    }
+
 
 
 
