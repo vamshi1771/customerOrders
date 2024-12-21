@@ -49,7 +49,6 @@ public class CustomerController {
         obj.SaveCustomer(customer, name);
     }
 
-
     @GetMapping("/getcustomer/{customerId}")
     public Optional<Customerdto> getcustomer(@PathVariable Integer customerId) throws NoCustomerExistException {
         return obj.getcustomer(customerId);

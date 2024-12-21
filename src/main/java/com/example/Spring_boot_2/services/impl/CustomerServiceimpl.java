@@ -99,10 +99,10 @@ public class CustomerServiceimpl implements CustomerService {
         else {
          return   CustRepo.findById(id)
                  .map(customers -> new Customerdto(
-                         customers.getCustomerid(),
+                         customers.getCustomerId(),
                          customers.getPhoneNumber(),
                          customers.getAddress(),
-                         customers.getCustomername(),
+                         customers.getCustomerName(),
                          customers.getRegion(),
                          customers.getGender()));
         }
@@ -130,8 +130,8 @@ public class CustomerServiceimpl implements CustomerService {
 
     private Paginationdto convertIntoPagination(Customers customer){
         Paginationdto paginationdto=new Paginationdto();
-        paginationdto.setCustomerId(customer.getCustomerid());
-        paginationdto.setCustomerName(customer.getCustomername());
+        paginationdto.setCustomerId(customer.getCustomerId());
+        paginationdto.setCustomerName(customer.getCustomerName());
         paginationdto.setRegion(customer.getRegion());
         paginationdto.setGender(customer.getGender());
 
@@ -143,20 +143,20 @@ public class CustomerServiceimpl implements CustomerService {
 
     private Customers convertIntoCusotmerFromCustormerdto(Customerdto customer){
         Customers customers = new Customers();
-        customers.setCustomername(customer.getCustomerName());
+        customers.setCustomerName(customer.getCustomerName());
         customers.setPhoneNumber(customer.getPhoneNumber());
         customers.setRegion(customer.getRegion());
         customers.setGender(customer.getGender());
         customers.setAddress(customer.getAddress());
-        customers.setCustomerid(customers.getCustomerid());
+        customers.setCustomerId(customers.getCustomerId());
         return customers;
     }
 
 
     private Customers convertIntoCustomersFromPagination(Paginationdto customer){
         Customers customers = new Customers();
-        customers.setCustomerid(customer.getCustomerId());
-        customers.setCustomername(customer.getCustomerName());
+        customers.setCustomerId(customer.getCustomerId());
+        customers.setCustomerName(customer.getCustomerName());
         customers.setRegion(customer.getRegion());
         customers.setGender(customer.getGender());
 
@@ -180,9 +180,9 @@ public class CustomerServiceimpl implements CustomerService {
 
     private Customerdto convertintoDto(Customers customer){
         Customerdto customerdto = new Customerdto();
-        customerdto.setCustomerId(customer.getCustomerid());
+        customerdto.setCustomerId(customer.getCustomerId());
         customerdto.setPhoneNumber(customer.getPhoneNumber());
-        customerdto.setCustomerName(customer.getCustomername());
+        customerdto.setCustomerName(customer.getCustomerName());
         customerdto.setRegion(customer.getRegion());
         customerdto.setGender(customer.getGender());
         customerdto.setAddress(customer.getAddress());
@@ -218,8 +218,8 @@ public class CustomerServiceimpl implements CustomerService {
         }
         Page<Customers> pg = obj.map(item -> {
             Customers cst = new Customers();
-            cst.setCustomerid((Integer) item[0]);
-            cst.setCustomername((String) item[1]);
+            cst.setCustomerId((Integer) item[0]);
+            cst.setCustomerName((String) item[1]);
             cst.setGender((String) item[2]);
             cst.setRegion((String) item[3]);
             System.out.println(cst);

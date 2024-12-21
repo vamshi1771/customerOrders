@@ -103,18 +103,18 @@ public class OrderServicesImpl implements OrderService {
     }
     private Orderdto convertIntoDto(Orders order){
         Orderdto orders = new Orderdto();
-        orders.setProductId(order.getProductId());
+//        orders.setProductId(order.getProductId());
         orders.setCustomerId(order.getCustomerId());
         orders.setPrice(order.getPrice());
-        orders.setNumberOfProducts(order.getNoOfProducts());
+//        orders.setNumberOfProducts(order.getNoOfProducts());
         return orders;
     }
     private Orders convertInto(Orderdto order){
         Orders orders = new Orders();
-        orders.setProductId(order.getProductId());
+//        orders.setProductId(order.getProductId());
         orders.setCustomerId(order.getCustomerId());
         orders.setPrice(order.getPrice());
-        orders.setNoOfProducts(order.getNumberOfProducts());
+//        orders.setNoOfProducts(order.getNumberOfProducts());
         return orders;
     }
 

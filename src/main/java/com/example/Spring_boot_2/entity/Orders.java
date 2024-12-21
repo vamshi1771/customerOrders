@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +15,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Entity
 @Table(name = "orders")
 public class    Orders {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "order_id")
@@ -23,9 +23,7 @@ public class    Orders {
     private String price;
     @Column(name = "customer_id")
     private Integer customerId;
-    @Column(name = "product_id")
-    private Long productId;
-    @Column(name = "no_of_products")
-    private Long noOfProducts;
+    @Column(name = "order_date")
+    private Date orderDate;
 
 }

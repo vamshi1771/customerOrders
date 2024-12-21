@@ -15,9 +15,9 @@ public class Customers {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "customer_id")
-    private Integer customerid;
+    private Integer customerId;
     @Column(name = "customer_name")
-    private String customername;
+    private String customerName;
     @Column(name = "region")
     private String region;
     @Column(name = "gender")

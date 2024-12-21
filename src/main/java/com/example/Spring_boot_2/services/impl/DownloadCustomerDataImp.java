@@ -25,7 +25,7 @@ public class DownloadCustomerDataImp implements DownloadCustomerData {
     @Override
     public Workbook fromCustomerId(List<Long> customerIds) {
         logger.info("Fetching Data for Excel Creation");
-        List <Customers> customerData = CustomerRepository.findBycustomeridIn(customerIds);
+        List <Customers> customerData = CustomerRepository.findBycustomerIdIn(customerIds);
         logger.info("CustomersData Fetch Sucessfully" + customerData.size());
 
 
@@ -69,11 +69,11 @@ public class DownloadCustomerDataImp implements DownloadCustomerData {
 
                 logger.info("writing in Sheets");
                 cell = row.createCell(DownloadCustomerEnum.customerSheet.CustomerID.getColumnIndex());
-                cell.setCellValue(customers.getCustomerid());
+                cell.setCellValue(customers.getCustomerId());
                 cell.setCellStyle(wrapText);
 
                 cell = row.createCell(DownloadCustomerEnum.customerSheet.CustomerName.getColumnIndex());
-                cell.setCellValue(customers.getCustomername());
+                cell.setCellValue(customers.getCustomerName());
                 cell.setCellStyle(wrapText);
 
                 cell = row.createCell(DownloadCustomerEnum.customerSheet.Region.getColumnIndex());

@@ -33,6 +33,6 @@ public interface CustomerRepository extends JpaRepository<Customers, Integer> {
     @Query(value = "SELECT customer_name FROM customers where lower(customer_name) like lower(?1)", nativeQuery = true)
     List<String> findByCustomerName(String name);
 
-    List<Customers> findBycustomeridIn(Collection<Long> customer_id);
+    List<Customers> findBycustomerIdIn(Collection<Long> customer_id);
 
 }
