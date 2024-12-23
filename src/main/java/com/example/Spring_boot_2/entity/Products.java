@@ -19,7 +19,7 @@ public class Products {
     @Column(name = "product_name")
     private String productName;
     @Column(name = "price")
-    private Long price;
+    private Double price;
     @Column(name = "quantity")
     private Long quantity;
     @Column (name = "is_delete")

@@ -1,15 +1,14 @@
 package com.example.Spring_boot_2.controllers;
 import com.example.Spring_boot_2.dto.Orderdto;
+import com.example.Spring_boot_2.dto.OrdersDto;
 import com.example.Spring_boot_2.dto.orderList;
-import com.example.Spring_boot_2.dto.pageableOrders;
-import com.example.Spring_boot_2.dto.regionsDto;
+import com.example.Spring_boot_2.dto.dashboardDto;
 import com.example.Spring_boot_2.entity.Orders;
 import com.example.Spring_boot_2.repository.OrderRepository;
 import com.example.Spring_boot_2.services.impl.OrderServicesImpl;
 import com.example.Spring_boot_2.exceptions.NoOrderExistsException;
 import com.example.Spring_boot_2.exceptions.NoOrdersForThisCustomer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -24,10 +23,9 @@ public class OrdersController {
     OrderRepository orderRepository;
 
 
-    @PostMapping("/saveOrder")
-    public void SaveOrder(@RequestBody Orderdto order) {
-        System.out.println(order.toString());
-        obj1.SaveOrder(order);
+    @PostMapping("/registerOrder")
+    public void registerOrder(@RequestBody OrdersDto ordersDto) {
+        obj1.registerOrder(ordersDto);
     }
 
     @GetMapping("/getAllOrders")
@@ -46,12 +44,12 @@ public class OrdersController {
     }
 
     @GetMapping("/getOrdersByCustomerId/{id}")
-    public List<Orderdto> getOrdersByCustomerId(@PathVariable Integer id) throws NoOrdersForThisCustomer {
+    public List<Orderdto> getOrdersByCustomerId(@PathVariable Long id) throws NoOrdersForThisCustomer {
         return obj1.getOrdersByCustomer_Id(id);
     }
 
     @GetMapping("/GetAllOrderedProducts")
-    public regionsDto getAllOrdersProducts(){
+    public dashboardDto getAllOrdersProducts(){
        return  obj1.getAllProducts();
     }
 

@@ -11,15 +11,15 @@ import java.util.Optional;
 
 public interface CustomerService {
 
-    List<Customerdto> getAllCusotmers();
-    public regionsDto getAllCusotmersRegions();
+    List<Customerdto> getAllCustomers();
+    public dashboardDto getAllCustomersRegions();
 
     public CustomersList CustomerInPages(int offset, int pagesize);
 
     public Page<Customers> SearchedCustomer(Integer offset,Integer pagesize,String text) throws NoCustomerExistException;
 
-    void SaveCustomer(Customerdto  customers,String name) throws columnAlreadyExistException;
+    void updateUser(UserDto userDto,String name) throws columnAlreadyExistException;
 
     public CustomersAndProductsDto getCustomersAndProducts();
-    Optional<Customerdto> getcustomer(Integer id)throws NoCustomerExistException;
+    Optional<Customerdto> getCustomer(Long id)throws NoCustomerExistException;
 }

@@ -12,7 +12,7 @@ import lombok.ToString;
 public class Orderdto {
     private Long productId;
     private String price;
-    private Integer customerId;
+    private Long customerId;
     private Long numberOfProducts;
 }
 

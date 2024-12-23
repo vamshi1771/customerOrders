@@ -1,28 +1,23 @@
 package com.example.Spring_boot_2.services.impl;
-import com.example.Spring_boot_2.dto.Orderdto;
-import com.example.Spring_boot_2.dto.orderList;
-import com.example.Spring_boot_2.dto.pageableOrders;
-import com.example.Spring_boot_2.dto.regionsDto;
+import com.example.Spring_boot_2.dto.*;
 import com.example.Spring_boot_2.entity.Orders;
 import com.example.Spring_boot_2.entity.Products;
 import com.example.Spring_boot_2.exceptions.NoOrderExistsException;
 import com.example.Spring_boot_2.exceptions.NoOrdersForThisCustomer;
 import com.example.Spring_boot_2.exceptions.OrderAlreadyExitsException;
-import com.example.Spring_boot_2.repository.CustomerRepository;
-import com.example.Spring_boot_2.repository.OrderRepository;
-import com.example.Spring_boot_2.repository.ProductsRepository;
+import com.example.Spring_boot_2.repository.*;
 import com.example.Spring_boot_2.services.OrderService;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,40 +28,71 @@ public class OrderServicesImpl implements OrderService {
     private OrderRepository orderRepo;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ProductsRepository productsRepository;
+
+    @Autowired
+    private OrderDetailsRepository orderDetailsRepository;
 
 
     @Autowired
     private CustomerRepository customerRepository;
-    public ResponseEntity<String>  SaveOrder(Orderdto order) {
-        Orders ord= convertInto(order);
-        Long productId =order.getProductId();
-        Integer customerId =  order.getCustomerId();
-       if(!customerRepository.findById(customerId).isPresent()){
+    public ResponseEntity<String> registerOrder(OrdersDto ordersDto) {
+
+       if(!userRepository.findById(ordersDto.getUser_id()).isPresent()){
            throw  new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"No Customer exits with this CustomerID");
-//           throw new OrderAlreadyExitsException("No Customer exits with this CustomerID");
        }
-        if(!productsRepository.findById(productId).isPresent()){
-            throw  new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"No product exits with this getProductId");
+        Orders ord = convertOrdersDtoIntoOrders(ordersDto);
+        List<Products> products = productsRepository.findAllByIdWithLock(ordersDto.getProductQuantityMap().keySet());
 
-//            throw new OrderAlreadyExitsException("No product exits with this getProductId");
-        }
-        Optional<Products> products =productsRepository.findById(productId);
-        if(productsRepository.findById(productId).isPresent()){
+        for (Products product : products) {
+            Long productId = product.getProductId();
+            Long quantityToDeduct = ordersDto.getProductQuantityMap().get(productId);
 
-            if(products.get().getQuantity() < order.getNumberOfProducts()){
-                throw  new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Required Stock not available for the product");
+            if (product.getQuantity() < quantityToDeduct) {
+                throw new IllegalArgumentException("Insufficient quantity for product ID: " + productId);
             }
 
+            product.setQuantity(product.getQuantity() - quantityToDeduct);
         }
-         Long number =  products.get().getQuantity() - order.getNumberOfProducts();
-        productsRepository.updateProductQuanatity(productId,number);
+        productsRepository.saveAll(products);
         orderRepo.save(ord);
         return new ResponseEntity<>(
                 "all is well",
                 HttpStatus.OK);
-
     }
+
+    public Double findOrderPrice(Map<Long,Long> productQuantity){
+        Double totalPrice = Double.valueOf(0);
+            List<Products> productsList = productsRepository.findAll();
+        Map<Long, Double> productPriceMap = productsList.stream()
+                .collect(Collectors.toMap(Products::getProductId, Products::getPrice));
+
+        for (Map.Entry<Long, Long> entry : productQuantity.entrySet()) {
+            Long productId = entry.getKey();
+            Long quantity = entry.getValue();
+            Double productPrice = productPriceMap.get(productId);
+            if (productPrice != null) {
+                totalPrice += productPrice * quantity;
+            } else {
+                throw new IllegalArgumentException("Product ID " + productId + " not found.");
+            }
+        }
+        return totalPrice;
+    }
+
+    public Orders convertOrdersDtoIntoOrders(OrdersDto ordersDto){
+        Orders order = new Orders();
+        Date currentDate = new Date();
+        order.setOrderDate(currentDate);
+        Double totalPrice = findOrderPrice(ordersDto.getProductQuantityMap());
+        order.setOrderPrice(totalPrice);
+        order.setUserId(order.getOrderId());
+        return order;
+    }
+
     public List<Orderdto> getOrder(Integer id)throws NoOrderExistsException {
         List<Orderdto> order= orderRepo.findById(id)
                 .stream()
@@ -91,7 +117,7 @@ public class OrderServicesImpl implements OrderService {
 //        String o_name = order.getOrdername();
 //        orderRepo.Updateorder(o_name,order_id);
 //    }
-   public List<Orderdto> getOrdersByCustomer_Id(Integer id)throws NoOrdersForThisCustomer {
+   public List<Orderdto> getOrdersByCustomer_Id(Long id)throws NoOrdersForThisCustomer {
        List<Orderdto> orderDto= orderRepo.getByCustomer_Id(id)
                 .stream()
                 .map(this::convertIntoDto)
@@ -104,19 +130,12 @@ public class OrderServicesImpl implements OrderService {
     private Orderdto convertIntoDto(Orders order){
         Orderdto orders = new Orderdto();
 //        orders.setProductId(order.getProductId());
-        orders.setCustomerId(order.getCustomerId());
-        orders.setPrice(order.getPrice());
+        orders.setCustomerId(order.getUserId());
+//        orders.setPrice(order.getOrderPrice());
 //        orders.setNumberOfProducts(order.getNoOfProducts());
         return orders;
     }
-    private Orders convertInto(Orderdto order){
-        Orders orders = new Orders();
-//        orders.setProductId(order.getProductId());
-        orders.setCustomerId(order.getCustomerId());
-        orders.setPrice(order.getPrice());
-//        orders.setNoOfProducts(order.getNumberOfProducts());
-        return orders;
-    }
+
 
     private pageableOrders convertIntoPageableOrders(Object[] object){
         pageableOrders pageableOrders = new pageableOrders();
@@ -147,11 +166,11 @@ public class OrderServicesImpl implements OrderService {
      return orderList1;
     }
 
-    public regionsDto getAllProducts(){
-        regionsDto regionsDto = new regionsDto();
+    public dashboardDto getAllProducts(){
+        dashboardDto regionsDto = new dashboardDto();
         List<String> products = orderRepo.getAllProducts();
         regionsDto.setRegions(products);
-        Integer customerCount =  customerRepository.findAll().size();
+        Long customerCount = Long.valueOf(customerRepository.findAll().size());
         regionsDto.setCustomersCount(customerCount);
         Integer orderCount = orderRepo.findAll().size();
         regionsDto.setOrdersCount(orderCount);

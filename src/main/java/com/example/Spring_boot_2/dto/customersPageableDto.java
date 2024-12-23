@@ -4,10 +4,9 @@ import lombok.Data;
 
 @Data
 public class customersPageableDto {
-    private  Integer customerId;
+    private  Long customerId;
     private  String customerName;
     private  String region;
     private String gender;
     private  Long orderCount;
-
 }

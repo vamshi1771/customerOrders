@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class Paginationdto {
 
-    private Integer customerId;
+    private Long customerId;
     private String customerName;
     private String region;
     private String gender;

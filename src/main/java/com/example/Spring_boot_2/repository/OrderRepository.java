@@ -32,7 +32,7 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
     List<Orders> getByregion(String Name);
 
     @Query(value = "SELECT * FROM orders JOIN customers on orders.cust_id= customers.customer_id WHERE cust_id=:id", nativeQuery = true)
-    List<Orders> getByCustomer_Id(Integer id);
+    List<Orders> getByCustomer_Id(Long id);
 
 
     @Query(value = "SELECT * FROM orders WHERE lower(order_name) like concat ('%', lower(:text), '%')", nativeQuery = true)

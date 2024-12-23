@@ -5,9 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class regionsDto {
+public class dashboardDto {
     private List<String> regions;
-    private Integer customersCount;
+    private Long customersCount;
     private Integer ordersCount;
     private Integer productsCount;
     private Integer outOfStock;

@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public interface ProductService {
 
-    void saveProduct(String productName,Long price,Long quantity,MultipartFile file) throws IOException;
+    void saveProduct(String productName,Double price,Long quantity,MultipartFile file) throws IOException;
 
-    void updateProduct(String productName,Long price,Long quantity,MultipartFile file,Long productId) throws IOException;
+    void updateProduct(String productName,Double price,Long quantity,MultipartFile file,Long productId) throws IOException;
     Page<Products> productsInPages(Integer offset, Integer pageSize);
 }

@@ -12,12 +12,10 @@ import javax.persistence.Column;
 @ToString
 
 public class Customerdto {
-    private Integer customerId;
+    private Long customerId;
     private String phoneNumber;
     private String customerName;
     private String region;
     private String gender;
     private String address;
-
-
 }

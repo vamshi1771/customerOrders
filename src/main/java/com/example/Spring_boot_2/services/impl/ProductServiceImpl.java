@@ -33,10 +33,9 @@ public class ProductServiceImpl implements ProductService {
     private static final Logger logger = LoggerFactory.getLogger(DownloadCustomerDataImp.class);
 
     @Override
-    public void saveProduct(String productName,Long price,Long quantity,MultipartFile file) throws IOException {
+    public void saveProduct(String productName,Double price,Long quantity,MultipartFile file) throws IOException {
         logger.info("Saving new Product");
         String data  = this.cloudinaryImageService.upload(file);
-        System.out.println("data"+data);
         Products product = new Products();
         product.setProductName(productName);
         product.setQuantity(quantity);
@@ -46,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(String productName,Long price,Long quantity,MultipartFile file,Long productId) throws IOException {
+    public void updateProduct(String productName,Double price,Long quantity,MultipartFile file,Long productId) throws IOException {
         logger.info("Saving new Product");
 
         String data  = this.cloudinaryImageService.upload(file);

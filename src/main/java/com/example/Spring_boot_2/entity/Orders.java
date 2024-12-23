@@ -14,16 +14,15 @@ import java.util.Date;
 
 @Entity
 @Table(name = "orders")
-public class    Orders {
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "order_id")
     private Long orderId;
-    @Column(name = "price")
-    private String price;
-    @Column(name = "customer_id")
-    private Integer customerId;
+    @Column(name = "order_price")
+    private Double orderPrice;
+    @Column(name = "user_id")
+    private Long userId;
     @Column(name = "order_date")
     private Date orderDate;
-
 }

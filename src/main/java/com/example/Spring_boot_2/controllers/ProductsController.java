@@ -1,7 +1,7 @@
 package com.example.Spring_boot_2.controllers;
 import com.example.Spring_boot_2.dto.CustomersAndProductsDto;
 import com.example.Spring_boot_2.entity.Products;
-import com.example.Spring_boot_2.services.impl.CustomerServiceimpl;
+import com.example.Spring_boot_2.services.impl.CustomerServiceImpl;
 import com.example.Spring_boot_2.services.impl.ProductServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class ProductsController {
     ProductServiceImpl productService;
 
     @Autowired
-    CustomerServiceimpl customerServiceimpl;
+    CustomerServiceImpl customerServiceimpl;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -26,7 +26,7 @@ public class ProductsController {
     @PostMapping("/saveProduct/{productName}/{price}/{quantity}")
     void saveProducts(@RequestParam("image") MultipartFile file,
                       @PathVariable String productName,
-                      @PathVariable Long price,
+                      @PathVariable Double price,
                       @PathVariable Long quantity) throws IOException {
         productService.saveProduct(productName,price,quantity,file);
     }
@@ -38,7 +38,7 @@ public class ProductsController {
     @PostMapping("/updateProduct/{productName}/{price}/{quantity}/{productId}")
     void updateProducts(@RequestParam("image") MultipartFile file,
                       @PathVariable String productName,
-                      @PathVariable Long price,
+                      @PathVariable Double price,
                       @PathVariable Long quantity,@PathVariable Long productId) throws IOException {
         productService.updateProduct(productName,price,quantity,file,productId);
     }

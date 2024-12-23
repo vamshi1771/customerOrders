@@ -4,6 +4,8 @@ import com.example.Spring_boot_2.entity.User;
 import com.example.Spring_boot_2.repository.UserRepository;
 import com.example.Spring_boot_2.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,11 +30,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User login(User user)throws IllegalArgumentException {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
-                if(authentication.isAuthenticated()){
-                    return user;
-                }
-                return user;
+    public ResponseEntity<?> login(User user)throws IllegalArgumentException {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
+            if (authentication.isAuthenticated()) {
+                User loggedUser = userRepository.findByUserName(user.getUserName());
+                return ResponseEntity.ok(loggedUser);
+            }
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication failed: " + e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Authentication failed: Invalid username or password.");
     }
 }
