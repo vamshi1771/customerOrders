@@ -1,10 +1,12 @@
 package com.example.Spring_boot_2.services.impl;
 import com.example.Spring_boot_2.dto.*;
+import com.example.Spring_boot_2.entity.OrderDetails;
 import com.example.Spring_boot_2.entity.Orders;
 import com.example.Spring_boot_2.entity.Products;
 import com.example.Spring_boot_2.exceptions.NoOrderExistsException;
 import com.example.Spring_boot_2.exceptions.NoOrdersForThisCustomer;
 import com.example.Spring_boot_2.exceptions.OrderAlreadyExitsException;
+import com.example.Spring_boot_2.exceptions.updateException;
 import com.example.Spring_boot_2.repository.*;
 import com.example.Spring_boot_2.services.OrderService;
 import org.hibernate.criterion.Order;
@@ -12,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -39,11 +43,10 @@ public class OrderServicesImpl implements OrderService {
 
     @Autowired
     private CustomerRepository customerRepository;
-    public ResponseEntity<String> registerOrder(OrdersDto ordersDto) {
 
-       if(!userRepository.findById(ordersDto.getUser_id()).isPresent()){
-           throw  new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"No Customer exits with this CustomerID");
-       }
+
+    @Transactional
+    public ResponseEntity<String> registerOrder(OrdersDto ordersDto) {
         Orders ord = convertOrdersDtoIntoOrders(ordersDto);
         List<Products> products = productsRepository.findAllByIdWithLock(ordersDto.getProductQuantityMap().keySet());
 
@@ -52,8 +55,14 @@ public class OrderServicesImpl implements OrderService {
             Long quantityToDeduct = ordersDto.getProductQuantityMap().get(productId);
 
             if (product.getQuantity() < quantityToDeduct) {
-                throw new IllegalArgumentException("Insufficient quantity for product ID: " + productId);
+                throw new updateException(product.getProductName() + " is out of stock");
             }
+            OrderDetails orderDetails = new OrderDetails();
+            orderDetails.setOrderId(ordersDto.getUser_id());
+            orderDetails.setProductId(productId);
+            orderDetails.setPrice(product.getPrice());
+            orderDetails.setProductQuantity(quantityToDeduct);
+            orderDetailsRepository.save(orderDetails);
 
             product.setQuantity(product.getQuantity() - quantityToDeduct);
         }
@@ -77,7 +86,7 @@ public class OrderServicesImpl implements OrderService {
             if (productPrice != null) {
                 totalPrice += productPrice * quantity;
             } else {
-                throw new IllegalArgumentException("Product ID " + productId + " not found.");
+                throw new updateException("Product ID " + productId + " not found.");
             }
         }
         return totalPrice;
@@ -89,11 +98,12 @@ public class OrderServicesImpl implements OrderService {
         order.setOrderDate(currentDate);
         Double totalPrice = findOrderPrice(ordersDto.getProductQuantityMap());
         order.setOrderPrice(totalPrice);
-        order.setUserId(order.getOrderId());
+        order.setProductCount((long) ordersDto.getProductQuantityMap().size());
+        order.setUserId(ordersDto.getUser_id());
         return order;
     }
 
-    public List<Orderdto> getOrder(Integer id)throws NoOrderExistsException {
+    public List<Orderdto> getOrder(Long id)throws NoOrderExistsException {
         List<Orderdto> order= orderRepo.findById(id)
                 .stream()
                 .map(this::convertIntoDto).collect(Collectors.toList());
@@ -109,7 +119,7 @@ public class OrderServicesImpl implements OrderService {
 
     }
    public List<Orderdto> getByRegion(String Name){
-        return orderRepo.getByregion(Name)
+        return orderRepo.getByRegion(Name)
                 .stream()
                 .map(this::convertIntoDto).collect(Collectors.toList());
     }
@@ -129,10 +139,11 @@ public class OrderServicesImpl implements OrderService {
     }
     private Orderdto convertIntoDto(Orders order){
         Orderdto orders = new Orderdto();
-//        orders.setProductId(order.getProductId());
-        orders.setCustomerId(order.getUserId());
-//        orders.setPrice(order.getOrderPrice());
-//        orders.setNumberOfProducts(order.getNoOfProducts());
+        orders.setOrderedDate(order.getOrderDate());
+        orders.setOrderId(order.getOrderId());
+        orders.setNumberOfProducts(order.getProductCount());
+        orders.setUserId(order.getOrderId());
+        orders.setPrice(order.getOrderPrice());
         return orders;
     }
 
@@ -141,11 +152,12 @@ public class OrderServicesImpl implements OrderService {
         pageableOrders pageableOrders = new pageableOrders();
         BigInteger orderId = (BigInteger) object[0];
         pageableOrders.setOrderId(orderId.longValue());
-        pageableOrders.setPrice((String) object[1]);
-        pageableOrders.setProductName((String) object[2]);
+        pageableOrders.setOrderedDate((String) object[1]);
+        Double price = (Double) object[2];
+        pageableOrders.setPrice(price);
         pageableOrders.setCustomerName((String) object[3]);
-        BigInteger bigInteger = (BigInteger) object[4];
-        pageableOrders.setProductCount(bigInteger.longValue());
+        BigInteger sum = (BigInteger) object[4];
+        pageableOrders.setProductCount(sum.longValue());
     return pageableOrders;
     }
 
@@ -170,7 +182,7 @@ public class OrderServicesImpl implements OrderService {
         dashboardDto regionsDto = new dashboardDto();
         List<String> products = orderRepo.getAllProducts();
         regionsDto.setRegions(products);
-        Long customerCount = Long.valueOf(customerRepository.findAll().size());
+        Long customerCount = Long.valueOf(userRepository.findAll().size());
         regionsDto.setCustomersCount(customerCount);
         Integer orderCount = orderRepo.findAll().size();
         regionsDto.setOrdersCount(orderCount);

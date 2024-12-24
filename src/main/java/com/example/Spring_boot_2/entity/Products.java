@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "product_id_seq_gen", sequenceName = "product_id_seq", initialValue = 1,allocationSize = 1)
     @Column(name = "product_id")
     private Long productId;
     @Column(name = "product_name")

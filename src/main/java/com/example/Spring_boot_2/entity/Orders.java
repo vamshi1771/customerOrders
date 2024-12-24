@@ -17,6 +17,7 @@ import java.util.Date;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "order_id_gen", sequenceName = "order_id_seq", initialValue = 1,allocationSize = 1)
     @Column(name = "order_id")
     private Long orderId;
     @Column(name = "order_price")
@@ -25,4 +26,6 @@ public class Orders {
     private Long userId;
     @Column(name = "order_date")
     private Date orderDate;
+    @Column(name = "product_count")
+    private Long productCount;
 }

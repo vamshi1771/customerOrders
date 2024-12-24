@@ -18,7 +18,7 @@ public interface OrderService {
 
 
     public ResponseEntity<String> registerOrder(OrdersDto ordersDto);
-    public List<Orderdto> getOrder(Integer id) throws NoOrderExistsException;
+    public List<Orderdto> getOrder(Long id) throws NoOrderExistsException;
 
     public List<Orders> getAllOrders();
     public List<Orderdto> getByRegion(String Name);

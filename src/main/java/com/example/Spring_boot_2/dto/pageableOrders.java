@@ -2,11 +2,13 @@ package com.example.Spring_boot_2.dto;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class pageableOrders {
 private Long orderId;
-private String ProductName;
+private String orderedDate;
 private String customerName;
-private String price;
+private Double price;
 private Long productCount;
 }

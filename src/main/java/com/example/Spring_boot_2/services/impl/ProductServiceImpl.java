@@ -34,7 +34,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void saveProduct(String productName,Double price,Long quantity,MultipartFile file) throws IOException {
-        logger.info("Saving new Product");
         String data  = this.cloudinaryImageService.upload(file);
         Products product = new Products();
         product.setProductName(productName);

@@ -11,7 +11,6 @@ import java.util.Map;
 @ToString
 @Builder
 public class OrdersDto {
-
     private Map<Long,Long> productQuantityMap;
     private Long user_id;
     private Long orderPrice;

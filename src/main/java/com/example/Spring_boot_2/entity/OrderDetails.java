@@ -17,6 +17,7 @@ public class OrderDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "orderDetailsId_seq_gen", sequenceName = "orderDetailsId_seq", initialValue = 1,allocationSize = 1)
     @Column(name = "order_details_id")
     private Long orderDetailsId;
 

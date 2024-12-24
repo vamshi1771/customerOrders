@@ -11,7 +11,6 @@ public class UserExceptionalHandler {
     @ExceptionHandler(NoCustomerExistException.class)
     public ResponseEntity<String> HandleUserException(NoCustomerExistException exception) {
         String error = exception.getMessage().toString();
-        System.out.println(exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_GATEWAY);
       }
     }

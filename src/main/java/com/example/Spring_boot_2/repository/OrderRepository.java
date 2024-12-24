@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 
-public interface OrderRepository extends JpaRepository<Orders, Integer> {
+public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     @Modifying
     @Transactional
@@ -20,18 +20,17 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
     void Updateorder(String o_name, Integer id);
 
 
-    @Query(value = "select o1.order_id as orderId, o1.price as price, p1.product_name as productName, c1.customer_name as customerName, o1.no_of_products as noOfProducts" +
-            " from ((orders as o1" +
-            " LEFT JOIN products as p1 ON o1.product_id = p1.product_id)" +
-            " inner join customers as c1 ON o1.customer_id = c1.customer_id)" +
+    @Query(value = "select o1.order_id as orderId, TO_CHAR(o1.order_date, 'YYYY-MM-DD') as orderedDate, o1.order_price as price,  c1.user_name as customerName, o1.product_count as noOfProducts" +
+            " from (orders o1" +
+            " inner join users c1 ON o1.user_id = c1.user_id)" +
             " order by o1.order_id" +
             " Limit ?2 offset ?1", nativeQuery = true)
     List<Object[]> findOrdersInPages(Integer offset, Integer pageSize);
 
-    @Query(value = "SELECT * FROM orders  JOIN customers ON orders.cust_id=customers.customer_id WHERE customers.region=:Name", nativeQuery = true)
-    List<Orders> getByregion(String Name);
+    @Query(value = "SELECT * FROM orders  JOIN users ON orders.user_id = users.user_id WHERE user.region = :Name", nativeQuery = true)
+    List<Orders> getByRegion(String Name);
 
-    @Query(value = "SELECT * FROM orders JOIN customers on orders.cust_id= customers.customer_id WHERE cust_id=:id", nativeQuery = true)
+    @Query(value = "SELECT * FROM orders JOIN users on orders.user_id = users.user_id WHERE users.user_id = :id", nativeQuery = true)
     List<Orders> getByCustomer_Id(Long id);
 
 
@@ -45,6 +44,6 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
     @Query(value = "SELECT Order_name FROM orders", nativeQuery = true)
     List<String> getBysameOrders();
 
-    @Query(value = "SELECT p1.product_name FROM products as p1 join orders o1 on o1.product_id = p1.product_id ", nativeQuery = true)
+    @Query(value = "SELECT details.product_name as productName from order_details as details", nativeQuery = true)
     List<String> getAllProducts();
 }

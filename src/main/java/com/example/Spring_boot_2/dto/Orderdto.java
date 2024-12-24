@@ -5,14 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class Orderdto {
-    private Long productId;
-    private String price;
-    private Long customerId;
+    private Date orderedDate;
+    private Double price;
+    private Long userId;
     private Long numberOfProducts;
+    private Long orderId;
 }
 

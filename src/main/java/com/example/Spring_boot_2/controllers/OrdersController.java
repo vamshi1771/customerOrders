@@ -35,7 +35,7 @@ public class OrdersController {
 
     @GetMapping("/getOrder/{id}")
     public List<Orderdto> getOrder(@PathVariable Integer id) throws NoOrderExistsException {
-        return obj1.getOrder(id);
+        return obj1.getOrder(Long.valueOf((id)));
     }
 
     @GetMapping("/getByRegion/{Name}")
